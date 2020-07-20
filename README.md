@@ -1,5 +1,5 @@
-### mDOSv1 `- by mirk0`
-<br />
+### mDOSv1
+<br />`- by mirk0`
 
 This is project i got assigned to do from University Professor of Operating Systems, since im interested so much in cyber security.
 It's a dos attack written solely in low C.
