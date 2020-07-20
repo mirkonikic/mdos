@@ -12,6 +12,8 @@ TEST IT ONLY ON YOUR COMPUTER, OR VIRTUAL MACHINE
 `Tool i developed for executing denial of service attacks. ` <br />`
 For now only one type of dos attacks is available: Sockstress.`<br />
 
+![alt_text](https://github.com/mirkonikic/m_dos/blob/master/Screenshot%20from%202020-07-20%2013-36-23.png)
+
 **TODO**:
 - [x] Fix Sockstress attack, RAM gets filled up quickly
 - [ ] Add Syn Flood attack with spoofed ip addresses (dos)
