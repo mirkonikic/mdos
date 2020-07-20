@@ -1,4 +1,4 @@
-### mDOSv1
+### mDOSv1 `- by mirk0`
 <br />
 
 This is project i got assigned to do from University Professor of Operating Systems, since im interested so much in cyber security.
