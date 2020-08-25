@@ -1,7 +1,7 @@
 ### mDOSv1
 <br />`- by mirk0`
 
-This is project i got assigned to do from University Professor of Operating Systems, since im interested so much in cyber security.
+This is project i got assigned to do from University Professor of Operating Systems, since i was interested in cyber security.
 It's a dos attack written solely in low C.
 There are libraries, but packets are manually created.
 If you need help about understanding the code contact me i'll explain everything.
