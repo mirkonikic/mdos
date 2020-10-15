@@ -1,4 +1,5 @@
 ### mDOSv1
+This is finished project, will post code soon, this is only for learning purposes
 <br />`- by mirk0`
 
 This is project i got assigned to do from University Professor of Operating Systems, since i was interested in cyber security.
