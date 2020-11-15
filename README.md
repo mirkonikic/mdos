@@ -1,5 +1,5 @@
 ### mDOSv1
-This is finished project, will post code soon, this is only for learning purposes
+This is finished project and is only for learning purposes
 <br />`- by mirk0`
 
 This is project i got assigned to do for my University.
