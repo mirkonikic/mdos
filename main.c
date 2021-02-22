@@ -1,10 +1,11 @@
 #include "main.h"
 
-int tcp_flag; //ako je podesena na 0 bice obican SYNFLOOS
+int tcp_flag; //ako je podesena na 0 bice obican SYNFLOOD
 //ako ne onda ce biti SOCKSTRESS
 
 #pragma pack(push)
 #pragma pack(1)
+
 struct ip_header
 {
     unsigned char version_ihl;
