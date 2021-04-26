@@ -16,22 +16,22 @@ int main(int argc, char** argv)
     parseArgs(argc, argv);
     initDetails();
     
-    pthread_t packet_processor;
-    pthread_t packet_sender;
-    pthread_t status_updater;
+    pthread_t reciever;
+    pthread_t sender;
+    pthread_t status;
 
-    pthread_create(&packet_processor, NULL, process_incoming, NULL);
-    pthread_create(&packet_sender, NULL, send_packet, NULL);
-    pthread_create(&status_updater, NULL, print_status, NULL);
+    pthread_create(&reciever, NULL, recieveAndProcess, NULL);
+    pthread_create(&sender, NULL, prepareAndSend, NULL);
+    pthread_create(&status, NULL, ustatus, NULL);
 
-    pthread_join(packet_processor, NULL);
-    pthread_join(packet_sender, NULL);
-    pthread_join(status_updater, NULL);
+    pthread_join(processor, NULL);
+    pthread_join(sender, NULL);
+    pthread_join(status, NULL);
 
     return 0;
 }
 
-void *print_status(void *arg)
+void *ustatus(void *arg)
 {
     char* sig[4] = {"ooo", "Ooo", "oOo", "ooO"};
     int i = 0;
@@ -47,7 +47,7 @@ void *print_status(void *arg)
     }
 }
 
-void* process_incoming(void* arg)
+void* recieveAndProcess(void* arg)
 {
     int s_listen = socket(AF_INET, SOCK_RAW, IPPROTO_TCP);
 
@@ -188,7 +188,7 @@ void send_ack(unsigned char *packet)
     //send(s_out, "ee", sizeof("ee"), 0);
 }
 
-void* send_packet(void* arg)
+void* prepareAndSend(void* arg)
 {
     int s_out;
     if((s_out = socket(AF_INET, SOCK_RAW, IPPROTO_TCP))<0){
