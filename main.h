@@ -24,9 +24,8 @@
 #include <time.h>
 #include <unistd.h>
 
-#define DEF_DELAY 10000 //10 * 1000 gde je 1000 1ms u usleep
 #define MAX_PAYLOAD_SIZE 1000
-#define DEBUGMODE 0
+#define VERBOSE 0
 
 /*TERMINAL COLOR CODES*/
 #define RESET   "\033[0m"
@@ -47,5 +46,16 @@
 #define BOLDMAGENTA  "\033[1m\033[35m"      /* Bold Magenta */
 #define BOLDCYAN     "\033[1m\033[36m"      /* Bold Cyan */
 #define BOLDWHITE    "\033[1m\033[37m"      /* Bold White */
+
+void intro(int t);
+void parseArgs(int argc, char** argv);
+void initDetails();
+int get_interface_ip(struct sockaddr_in *ip, char *iface);
+void *process_incoming(void *arg);
+void *print_status(void *arg);
+void *send_packet(void* arg);
+void send_ack(unsigned char *packet);
+void calc_tcp_checksum(unsigned char* packet, unsigned long packet_length, struct in_addr src, struct in_addr dst);
+void loadPayload(char *path);
 
 #endif
