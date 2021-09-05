@@ -14,4 +14,3 @@ For now only one type of dos attacks is available: Sockstress.`<br />
 **TODO**:
 - [x] Fix Sockstress attack, RAM gets filled up quickly
 - [ ] Add Syn Flood attack with spoofed ip addresses (dos)
-- [ ] Try to add third to be Ping of Death
